@@ -8,119 +8,350 @@ const recentPosts = allPosts
   .slice(0, 5);
 ---
 
-<Layout title="首页">
-  <section>
-    <h1>👋 你好，我是 IBree3</h1>
-    <p>从零到无限可能。记录技术成长，分享学习心得。</p>
-  </section>
+<Layout title="首页" description="个人技术博客 - 从零到无限可能。记录技术成长，分享学习心得。">
+  <div class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        你好，我是 <span class="gradient-text">IBree3</span>
+      </h1>
+      <p class="hero-subtitle">从零到无限可能</p>
+      <p class="hero-description">
+        记录技术成长，分享学习心得。专注于 AI、开源、前端开发与工程化实践。
+      </p>
+      <div class="hero-actions">
+        <a href="/posts" class="btn-primary">浏览文章</a>
+        <a href="/about" class="btn-secondary">关于我</a>
+      </div>
+    </div>
+  </div>
 
-  <section>
-    <h2>最新文章</h2>
-    <ul>
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">最新文章</h2>
+      <a href="/posts" class="section-link">查看全部 →</a>
+    </div>
+
+    <div class="posts-grid">
       {recentPosts.map((post) => (
-        <li>
-          <a href={`/posts/${post.slug}`}>
-            <h3>{post.data.title}</h3>
-            <div class="meta">
-              <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
-              {post.data.category && (
-                <>
-                  {' · '}
-                  <span class="category">{post.data.category}</span>
-                </>
+        <article class="post-card">
+          <a href={`/posts/${post.slug}`} class="post-link">
+            <div class="post-content">
+              <div class="post-meta">
+                <time class="post-date">
+                  {post.data.date.toLocaleDateString('zh-CN')}
+                </time>
+                {post.data.category && (
+                  <span class="post-category">{post.data.category}</span>
+                )}
+              </div>
+
+              <h3 class="post-title">{post.data.title}</h3>
+
+              {post.data.description && (
+                <p class="post-excerpt">{post.data.description}</p>
+              )}
+
+              {post.data.tags && post.data.tags.length > 0 && (
+                <div class="post-tags">
+                  {post.data.tags.slice(0, 3).map((tag) => (
+                    <span class="post-tag">#{tag}</span>
+                  ))}
+                  {post.data.tags.length > 3 && (
+                    <span class="post-tag-more">+{post.data.tags.length - 3}</span>
+                  )}
+                </div>
               )}
             </div>
-            <p>{post.data.description || ''}</p>
-            {post.data.tags && post.data.tags.length > 0 && (
-              <div class="tags">
-                {post.data.tags.map((tag) => (
-                  <span class="tag">#{tag}</span>
-                ))}
-              </div>
-            )}
           </a>
-        </li>
+        </article>
       ))}
-    </ul>
+    </div>
+  </section>
+
+  <section class="section section-secondary">
+    <div class="section-content">
+      <h2 class="section-title">关于这个博客</h2>
+      <p>
+        这是我的技术博客，记录了我在学习、工作和项目开发中的心得体会。
+        这里没有复杂的教程，只有真实的经验和思考。
+      </p>
+      <ul class="feature-list">
+        <li>📝 深入浅出的技术文章</li>
+        <li>🚀 实战驱动的项目经验</li>
+        <li>💡 持续优化的工程实践</li>
+        <li>🌟 开源分享与知识沉淀</li>
+      </ul>
+    </div>
   </section>
 </Layout>
 
 <style>
-  section {
-    margin-bottom: 60px;
+  /* Hero Section */
+  .hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 80px 24px;
+    text-align: center;
+    margin: -48px -24px 48px -24px;
   }
 
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 16px;
+  .hero-content {
+    max-width: 700px;
+    margin: 0 auto;
   }
 
-  h2 {
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
+  .gradient-text {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  li {
-    margin-bottom: 30px;
+  .hero-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 16px 0;
+    opacity: 0.95;
   }
 
-  li a {
+  .hero-description {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    margin: 0 0 32px 0;
+    opacity: 0.9;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 12px 32px;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-primary {
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 64px;
+  }
+
+  .section-secondary {
+    background: #fafafa;
+    padding: 48px;
+    border-radius: var(--radius-lg);
+    margin-bottom: 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .section-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+
+  .section-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Post Grid */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .post-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+  }
+
+  .post-link {
     display: block;
     text-decoration: none;
     color: inherit;
+    padding: 24px;
   }
 
-  li a:hover h3 {
-    color: #2563eb;
+  .post-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
-  .meta {
-    color: #6b7280;
-    font-size: 0.875rem;
-    margin-bottom: 8px;
+  .post-date {
+    color: var(--color-text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
   }
 
-  time {
-    color: #6b7280;
-    font-size: 0.875rem;
-  }
-
-  .category {
+  .post-category {
     display: inline-block;
     background: #dbeafe;
     color: #1e40af;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-  }
-
-  p {
-    margin: 8px 0 0 0;
-    color: #4b5563;
-  }
-
-  .tags {
-    margin-top: 8px;
-  }
-
-  .tag {
-    display: inline-block;
-    background: #f3f4f6;
-    color: #4b5563;
-    padding: 2px 8px;
+    padding: 4px 10px;
     border-radius: 9999px;
     font-size: 0.75rem;
-    margin-right: 8px;
+    font-weight: 600;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  .post-card:hover .post-title {
+    color: var(--color-primary);
+  }
+
+  .post-excerpt {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    flex-grow: 1;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .post-tag {
+    background: #f3f4f6;
+    color: var(--color-text-secondary);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .post-tag-more {
+    background: #e5e7eb;
+    color: var(--color-text-secondary);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+  }
+
+  /* Feature List */
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 24px 0 0 0;
+  }
+
+  .feature-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 1.0625rem;
+  }
+
+  .feature-list li:last-child {
+    border-bottom: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero {
+      padding: 48px 16px;
+      margin: -32px -16px 32px -16px;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-secondary {
+      padding: 32px 24px;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
   }
 </style>

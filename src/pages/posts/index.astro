@@ -6,97 +6,259 @@ const allPosts = await getCollection('posts');
 const sortedPosts = allPosts.sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+
+// 计算统计数据
+const totalCount = sortedPosts.length;
+const categories = new Set<string>();
+const allTags = new Set<string>();
+
+sortedPosts.forEach((post) => {
+  if (post.data.category) categories.add(post.data.category);
+  post.data.tags.forEach((tag) => allTags.add(tag));
+});
 ---
 
-<Layout title="文章列表">
-  <h1>📚 所有文章</h1>
+<Layout
+  title="文章列表"
+  description={`浏览全部 ${totalCount} 篇技术文章`}
+>
+  <div class="page-header">
+    <h1 class="page-title">全部文章</h1>
+    <p class="page-subtitle">共 {totalCount} 篇文章</p>
+  </div>
 
-  <ul>
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">{totalCount}</span>
+      <span class="stat-label">文章</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{categories.size}</span>
+      <span class="stat-label">分类</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{allTags.size}</span>
+      <span class="stat-label">标签</span>
+    </div>
+  </div>
+
+  <div class="posts-list">
     {sortedPosts.map((post) => (
-      <li>
-        <a href={`/posts/${post.slug}`}>
-          <h2>{post.data.title}</h2>
-          <div>
-            <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
-            {post.data.category && (
-              <>
-                {' · '}
-                <span class="category">{post.data.category}</span>
-              </>
+      <article class="post-item">
+        <a href={`/posts/${post.slug}`} class="post-item-link">
+          <div class="post-item-content">
+            <div class="post-item-meta">
+              <time class="post-item-date">
+                {post.data.date.toLocaleDateString('zh-CN')}
+              </time>
+              {post.data.category && (
+                <span class="post-item-category">{post.data.category}</span>
+              )}
+            </div>
+
+            <h2 class="post-item-title">{post.data.title}</h2>
+
+            {post.data.description && (
+              <p class="post-item-excerpt">{post.data.description}</p>
+            )}
+
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="post-item-tags">
+                {post.data.tags.slice(0, 5).map((tag) => (
+                  <span class="post-item-tag">#{tag}</span>
+                ))}
+                {post.data.tags.length > 5 && (
+                  <span class="post-item-tag-more">
+                    +{post.data.tags.length - 5}
+                  </span>
+                )}
+              </div>
             )}
           </div>
-          {post.data.description && <p>{post.data.description}</p>}
-          {post.data.tags && post.data.tags.length > 0 && (
-            <div>
-              {post.data.tags.map((tag) => (
-                <span class="tag">#{tag}</span>
-              ))}
-            </div>
-          )}
         </a>
-      </li>
+      </article>
     ))}
-  </ul>
+  </div>
 </Layout>
 
 <style>
-  h1 {
-    margin-bottom: 40px;
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.02em;
   }
 
-  li {
-    margin-bottom: 40px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid #e5e7eb;
+  .page-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    margin: 0;
   }
 
-  li a {
+  /* Stats Bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .stat-item {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-primary);
+  }
+
+  .stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  /* Posts List */
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .post-item {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+
+  .post-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-primary);
+  }
+
+  .post-item-link {
     display: block;
     text-decoration: none;
     color: inherit;
   }
 
-  li a:hover h2 {
-    color: #2563eb;
+  .post-item-content {
+    padding: 28px;
   }
 
-  h2 {
-    margin: 0 0 10px 0;
-    font-size: 1.5rem;
+  .post-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
   }
 
-  div {
-    color: #6b7280;
+  .post-item-date {
+    color: var(--color-text-secondary);
     font-size: 0.875rem;
-    margin-bottom: 8px;
+    font-weight: 500;
   }
 
-  p {
-    margin: 8px 0 0 0;
-    color: #4b5563;
-  }
-
-  .tag {
-    display: inline-block;
-    background: #f3f4f6;
-    color: #4b5563;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    margin-right: 8px;
-  }
-
-  .category {
+  .post-item-category {
     display: inline-block;
     background: #dbeafe;
     color: #1e40af;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .post-item-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+    color: var(--color-text);
+  }
+
+  .post-item:hover .post-item-title {
+    color: var(--color-primary);
+  }
+
+  .post-item-excerpt {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 0 0 16px 0;
+  }
+
+  .post-item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .post-item-tag {
+    background: #f3f4f6;
+    color: var(--color-text-secondary);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .post-item-tag-more {
+    background: #e5e7eb;
+    color: var(--color-text-secondary);
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .stats-bar {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .stat-item {
+      padding: 24px;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+    }
+
+    .post-item-content {
+      padding: 20px;
+    }
+
+    .post-item-title {
+      font-size: 1.25rem;
+    }
   }
 </style>

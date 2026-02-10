@@ -1,26 +1,81 @@
 ---
 interface Props {
   title: string;
+  description?: string;
+  image?: string;
+  url?: string;
+  type?: string;
 }
 
-const { title } = Astro.props;
+const { title, description, image, url, type = 'website' } = Astro.props;
+const siteUrl = 'https://ibreez3.github.io';
+const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
+const siteImage = image || `${siteUrl}/og-image.png`;
+
+// 页面标题
+const pageTitle = title.includes('ZeroOne') ? title : `${title} | ZeroOne`;
+
+// 页面描述
+const pageDescription = description || '个人技术博客 - 从零到无限可能。记录技术成长，分享学习心得。';
 ---
 
 <!doctype html>
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="个人技术博客" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title} | ZeroOne</title>
+
+    <!-- SEO Meta Tags -->
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={fullUrl} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={fullUrl} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={siteImage} />
+    <meta property="og:site_name" content="ZeroOne" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={fullUrl} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={siteImage} />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ZeroOne",
+        "url": siteUrl,
+        "description": pageDescription,
+        "inLanguage": "zh-CN"
+      }
+    </script>
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
     <header>
       <nav>
-        <a href="/">ZeroOne</a>
-        <div>
+        <a href="/" class="logo">
+          <span class="logo-icon">🚀</span>
+          <span>ZeroOne</span>
+        </a>
+        <div class="nav-links">
           <a href="/">首页</a>
           <a href="/posts">文章</a>
           <a href="/categories">分类</a>
@@ -29,70 +84,276 @@ const { title } = Astro.props;
         </div>
       </nav>
     </header>
+
     <main>
       <slot />
     </main>
+
     <footer>
-      <p>&copy; 2026 ZeroOne. All rights reserved.</p>
+      <div class="footer-content">
+        <p>&copy; 2026 ZeroOne. All rights reserved.</p>
+        <p class="footer-links">
+          <a href="https://github.com/ibreez3" target="_blank" rel="noopener noreferrer">GitHub</a>
+          <span>·</span>
+          <a href="https://github.com/ibreez3/ibreez3.github.io" target="_blank" rel="noopener noreferrer">源码</a>
+        </p>
+      </div>
     </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top" aria-label="回到顶部">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M18 15l-6-6-6 6"/>
+      </svg>
+    </button>
+
+    <script>
+      // 回到顶部按钮逻辑
+      const backToTop = document.getElementById('back-to-top');
+      let isScrolling = false;
+
+      window.addEventListener('scroll', () => {
+        if (!isScrolling) {
+          window.requestAnimationFrame(() => {
+            if (window.scrollY > 300) {
+              backToTop.classList.add('visible');
+            } else {
+              backToTop.classList.remove('visible');
+            }
+            isScrolling = false;
+          });
+          isScrolling = true;
+        }
+      });
+
+      backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    </script>
   </body>
 </html>
 
 <style is:global>
   :root {
-    --max-width: 1200px;
-    --nav-height: 60px;
-    --font-main: system-ui, -apple-system, sans-serif;
+    --max-width: 1000px;
+    --nav-height: 64px;
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-text: #1f2937;
+    --color-text-secondary: #6b7280;
+    --color-border: #e5e7eb;
+    --color-background: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
     font-family: var(--font-main);
-    line-height: 1.6;
+    line-height: 1.75;
+    color: var(--color-text);
     margin: 0;
     padding: 0;
+    background: var(--color-background);
   }
 
+  /* Header */
   header {
     position: sticky;
     top: 0;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
     height: var(--nav-height);
     display: flex;
     align-items: center;
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
   }
 
   nav {
     max-width: var(--max-width);
     width: 100%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  nav a {
-    color: #374151;
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
     text-decoration: none;
-    margin-right: 20px;
+    transition: opacity 0.2s;
   }
 
-  nav a:hover {
-    color: #2563eb;
+  .logo:hover {
+    opacity: 0.8;
   }
 
+  .logo-icon {
+    font-size: 1.5rem;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+  }
+
+  .nav-links a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a:hover {
+    color: var(--color-primary);
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-primary);
+    transition: width 0.2s;
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  /* Main */
   main {
     max-width: var(--max-width);
     width: 100%;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 48px 24px;
+    min-height: calc(100vh - var(--nav-height) - 120px);
   }
 
+  /* Footer */
   footer {
     text-align: center;
-    padding: 40px;
-    border-top: 1px solid #e5e7eb;
-    color: #6b7280;
+    padding: 48px 24px;
+    border-top: 1px solid var(--color-border);
+    background: #fafafa;
+  }
+
+  .footer-content p {
+    margin: 8px 0;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+  }
+
+  .footer-links {
+    margin-top: 12px;
+  }
+
+  .footer-links a {
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-links span {
+    margin: 0 12px;
+    color: var(--color-border);
+  }
+
+  /* Back to Top Button */
+  #back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+  }
+
+  #back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  #back-to-top:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.15);
+  }
+
+  #back-to-top:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    :root {
+      --nav-height: 56px;
+    }
+
+    nav {
+      padding: 0 16px;
+    }
+
+    .logo {
+      font-size: 1.125rem;
+    }
+
+    .nav-links {
+      gap: 16px;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+    }
+
+    main {
+      padding: 32px 16px;
+    }
+
+    #back-to-top {
+      bottom: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+    }
   }
 </style>

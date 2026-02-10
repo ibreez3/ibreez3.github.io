@@ -17,65 +17,148 @@ allPosts.forEach((post) => {
 
 // 按分类名排序
 const sortedCategories = Array.from(categories.entries()).sort((a, b) =>
-  a[0].localeCompare(b[0])
+  b[1].count - a[1].count
 );
 ---
 
-<Layout title="所有分类">
-  <h1>📂 所有分类</h1>
+<Layout
+  title="所有分类"
+  description="浏览博客文章分类，按主题查找你感兴趣的内容"
+>
+  <div class="page-header">
+    <h1 class="page-title">文章分类</h1>
+    <p class="page-subtitle">共 {categories.size} 个分类</p>
+  </div>
 
   <div class="categories-grid">
     {sortedCategories.map(([category, info]) => (
-      <div class="category-card">
-        <h2>
-          <a href={`/categories/${category}`}>{category}</a>
-        </h2>
-        <p>{info.count} 篇文章</p>
-      </div>
+      <article class="category-card">
+        <a href={`/categories/${category}`} class="category-link">
+          <div class="category-icon">
+            {getCategoryIcon(category)}
+          </div>
+          <div class="category-content">
+            <h2 class="category-name">{category}</h2>
+            <p class="category-count">{info.count} 篇文章</p>
+          </div>
+        </a>
+      </article>
     ))}
   </div>
 </Layout>
 
+<script>
+  function getCategoryIcon(category: string): string {
+    const icons: Record<string, string> = {
+      'AI': '🤖',
+      '前端': '🎨',
+      '后端': '⚙️',
+      '生活': '🌱',
+      '未分类': '📁',
+    };
+    return icons[category] || '📂';
+  }
+</script>
+
 <style>
-  h1 {
-    margin-bottom: 40px;
+  .page-header {
+    text-align: center;
+    margin-bottom: 56px;
   }
 
+  .page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.02em;
+  }
+
+  .page-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* Categories Grid */
   .categories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    gap: 24px;
   }
 
   .category-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 24px;
-    transition: all 0.2s;
+    background: white;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .category-card:hover {
-    border-color: #2563eb;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-primary);
   }
 
-  .category-card h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.25rem;
-  }
-
-  .category-card h2 a {
+  .category-link {
+    display: flex;
+    align-items: center;
+    padding: 32px;
     text-decoration: none;
     color: inherit;
+    gap: 20px;
   }
 
-  .category-card h2 a:hover {
-    color: #2563eb;
+  .category-icon {
+    font-size: 3rem;
+    line-height: 1;
+    flex-shrink: 0;
   }
 
-  .category-card p {
+  .category-content {
+    flex-grow: 1;
+  }
+
+  .category-name {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--color-text);
+  }
+
+  .category-card:hover .category-name {
+    color: var(--color-primary);
+  }
+
+  .category-count {
+    color: var(--color-text-secondary);
+    font-size: 0.9375rem;
+    font-weight: 500;
     margin: 0;
-    color: #6b7280;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .page-title {
+      font-size: 2rem;
+    }
+
+    .categories-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .category-link {
+      padding: 24px;
+      gap: 16px;
+    }
+
+    .category-icon {
+      font-size: 2.5rem;
+    }
+
+    .category-name {
+      font-size: 1.125rem;
+    }
   }
 </style>
