@@ -11,13 +11,14 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { Content } = await post.render();
 const { title, date, category, tags, description } = post.data;
 
 // 计算阅读时间（中文每分钟约 400 字）
 const readTime = Math.ceil(Content.length / 400);
 
 // 跳过 H1（页面已有标题），只保留 H2 和 H3
+const { headings } = await post.render();
 const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
 ---
 
@@ -28,40 +29,41 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   type="article"
 >
   <article class="article">
-    <!-- 文章头部 -->
-    <header class="article-header">
-      <div class="header-top">
-        {category && (
-          <a href={`/categories/${category}`} class="category-badge">
-            {category}
-          </a>
-        )}
-        <time datetime={date.toISOString()} class="article-date">
-          {date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
-        </time>
+    <div class="article-header-wrapper">
+      <div class="article-header">
+        <div class="header-meta">
+          {category && (
+            <a href={`/categories/${category}`} class="category-badge">
+              {category}
+            </a>
+          )}
+          <time datetime={date.toISOString()} class="article-date">
+            {date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </time>
+        </div>
+
+        <h1 class="article-title">{title}</h1>
+
+        {description && <p class="article-excerpt">{description}</p>}
+
+        <div class="article-meta">
+          <span class="meta-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            {readTime} 分钟阅读
+          </span>
+          <span class="meta-item">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            {tags.length} 个标签
+          </span>
+        </div>
       </div>
-
-      <h1 class="article-title">{title}</h1>
-
-      {description && <p class="article-excerpt">{description}</p>}
-
-      <div class="article-meta">
-        <span class="meta-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
-          </svg>
-          {readTime} 分钟阅读
-        </span>
-        <span class="meta-item">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          {tags.length} 个标签
-        </span>
-      </div>
-    </header>
+    </div>
 
     <!-- 目录导航 -->
     {toc.length > 0 && (
@@ -108,26 +110,34 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   article {
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
   }
 
-  /* 文章头部 */
+  /* 文章头部容器 */
+  .article-header-wrapper {
+    position: relative;
+    z-index: 2;
+    background: white;
+  }
+
   .article-header {
+    padding-bottom: 40px;
     margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 2px solid var(--color-border);
   }
 
-  .header-top {
+  .header-meta {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .category-badge {
     display: inline-flex;
     align-items: center;
-    padding: 4px 12px;
+    padding: 6px 14px;
     background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     color: #1e40af;
     border-radius: 9999px;
@@ -135,13 +145,12 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     font-weight: 600;
     text-decoration: none;
     transition: all 0.3s;
-    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
   }
 
   .category-badge:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.15);
-    background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.15);
   }
 
   .article-date {
@@ -157,6 +166,8 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     margin: 0 0 20px 0;
     color: var(--color-text);
     letter-spacing: -0.02em;
+    position: relative;
+    z-index: 3;
   }
 
   .article-excerpt {
@@ -164,12 +175,16 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     line-height: 1.75;
     color: var(--color-text-secondary);
     margin: 0 0 24px 0;
+    position: relative;
+    z-index: 3;
   }
 
   .article-meta {
     display: flex;
     gap: 24px;
     align-items: center;
+    position: relative;
+    z-index: 3;
   }
 
   .meta-item {
@@ -182,6 +197,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
 
   .meta-item svg {
     color: var(--color-primary);
+    flex-shrink: 0;
   }
 
   /* 目录 */
@@ -190,7 +206,9 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: 24px;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 2;
   }
 
   .toc-header {
@@ -205,6 +223,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
 
   .toc-header svg {
     color: var(--color-primary);
+    flex-shrink: 0;
   }
 
   .toc-list {
@@ -214,7 +233,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   }
 
   .toc-item {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .toc-item a {
@@ -222,7 +241,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     color: var(--color-text-secondary);
     text-decoration: none;
     font-size: 0.9375rem;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: var(--radius-md);
     transition: all 0.2s;
   }
@@ -230,7 +249,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   .toc-item a:hover {
     color: var(--color-primary);
     background: #eff6ff;
-    padding-left: 16px;
+    padding-left: 18px;
   }
 
   .toc-depth-2 {
@@ -238,14 +257,22 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   }
 
   .toc-depth-3 {
-    padding-left: 24px;
+    padding-left: 32px;
+  }
+
+  .toc-depth-3 a {
+    font-size: 0.875rem;
   }
 
   /* 文章内容 */
   .article-content {
-    font-size: 1.0625rem;
-    line-height: 1.8;
-    color: var(--color-text);
+    position: relative;
+    z-index: 1;
+    background: white;
+  }
+
+  .article-content :global(h1) {
+    display: none; /* 隐藏文章内容中的 H1，避免重复 */
   }
 
   .article-content :global(h2) {
@@ -256,6 +283,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     padding-bottom: 12px;
     border-bottom: 2px solid var(--color-border);
     letter-spacing: -0.01em;
+    position: relative;
   }
 
   .article-content :global(h3) {
@@ -268,6 +296,9 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
 
   .article-content :global(p) {
     margin-bottom: 24px;
+    line-height: 1.8;
+    position: relative;
+    z-index: 1;
   }
 
   .article-content :global(ul),
@@ -291,6 +322,8 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     font-size: 0.9375rem;
     line-height: 1.6;
     box-shadow: var(--shadow-md);
+    position: relative;
+    z-index: 1;
   }
 
   .article-content :global(code) {
@@ -330,6 +363,8 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     margin: 28px 0;
     color: #1e40af;
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    position: relative;
+    z-index: 1;
   }
 
   .article-content :global(strong) {
@@ -342,6 +377,8 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     margin-top: 48px;
     padding-top: 32px;
     border-top: 1px solid var(--color-border);
+    position: relative;
+    z-index: 1;
   }
 
   .tags-label {
@@ -364,6 +401,8 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     margin-bottom: 8px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid transparent;
+    position: relative;
+    z-index: 1;
   }
 
   .tag:hover {
@@ -376,17 +415,17 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
   /* Responsive */
   @media (max-width: 768px) {
     .article-title {
-      font-size: 1.875rem;
+      font-size: 2rem;
     }
 
     .article-excerpt {
       font-size: 1.0625rem;
     }
 
-    .header-top {
+    .header-meta {
       flex-direction: column;
       align-items: flex-start;
-      gap: 8px;
+      gap: 12px;
     }
 
     .article-meta {
