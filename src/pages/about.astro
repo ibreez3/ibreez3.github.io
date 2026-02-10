@@ -1,0 +1,72 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="关于我">
+  <article>
+    <h1>👋 关于我</h1>
+
+    <section>
+      <h2>我是谁</h2>
+      <p>
+        我是 IBree3，一名热爱技术的开发者。这个博客记录了我的学习笔记、项目经验和技术思考。
+      </p>
+    </section>
+
+    <section>
+      <h2>技术栈</h2>
+      <ul>
+        <li>前端：HTML, CSS, JavaScript, Astro</li>
+        <li>后端：Go, Python, Node.js</li>
+        <li>工具：Git, Docker, Linux</li>
+        <li>区块链：Solidity, 公链开发</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>联系方式</h2>
+      <p>
+        GitHub: <a href="https://github.com/ibreez3">@ibreez3</a>
+      </p>
+    </section>
+  </article>
+</Layout>
+
+<style>
+  article {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 40px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 8px;
+  }
+
+  p {
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  ul {
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>

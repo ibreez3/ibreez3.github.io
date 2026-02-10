@@ -1,0 +1,115 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const tags = new Set<string>();
+
+  posts.forEach((post) => {
+    post.data.tags.forEach((tag) => tags.add(tag));
+  });
+
+  return Array.from(tags).map((tag) => ({
+    params: { tag },
+  }));
+}
+
+const { tag } = Astro.params;
+const allPosts = await getCollection('posts');
+const tagPosts = allPosts
+  .filter((post) => post.data.tags.includes(tag))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title={`标签: ${tag}`}>
+  <h1>🏷️ #{tag}</h1>
+
+  <p class="count">共 {tagPosts.length} 篇文章</p>
+
+  <ul>
+    {tagPosts.map((post) => (
+      <li>
+        <a href={`/posts/${post.slug}`}>
+          <h2>{post.data.title}</h2>
+          <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+          {post.data.category && (
+            <>
+              {' · '}
+              <span class="category">{post.data.category}</span>
+            </>
+          )}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <p class="back">
+    <a href="/tags">← 返回所有标签</a>
+  </p>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 8px;
+  }
+
+  .count {
+    color: #6b7280;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  li a:hover h2 {
+    color: #2563eb;
+  }
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+  }
+
+  time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .category {
+    display: inline-block;
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-left: 8px;
+  }
+
+  .back {
+    margin-top: 40px;
+  }
+
+  .back a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .back a:hover {
+    text-decoration: underline;
+  }
+</style>

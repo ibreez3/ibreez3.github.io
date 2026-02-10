@@ -1,0 +1,122 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  const categories = new Set<string>();
+
+  posts.forEach((post) => {
+    if (post.data.category) {
+      categories.add(post.data.category);
+    }
+  });
+
+  return Array.from(categories).map((category) => ({
+    params: { category },
+  }));
+}
+
+const { category } = Astro.params;
+const allPosts = await getCollection('posts');
+const categoryPosts = allPosts
+  .filter((post) => post.data.category === category)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Layout title={`分类: ${category}`}>
+  <h1>📂 {category}</h1>
+
+  <p class="count">共 {categoryPosts.length} 篇文章</p>
+
+  <ul>
+    {categoryPosts.map((post) => (
+      <li>
+        <a href={`/posts/${post.slug}`}>
+          <h2>{post.data.title}</h2>
+          <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+          {post.data.tags && post.data.tags.length > 0 && (
+            <div class="tags">
+              {post.data.tags.map((tag) => (
+                <span class="tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <p class="back">
+    <a href="/categories">← 返回所有分类</a>
+  </p>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 8px;
+  }
+
+  .count {
+    color: #6b7280;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  li a:hover h2 {
+    color: #2563eb;
+  }
+
+  h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+  }
+
+  time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .tags {
+    margin-top: 8px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #4b5563;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+
+  .back {
+    margin-top: 40px;
+  }
+
+  .back a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .back a:hover {
+    text-decoration: underline;
+  }
+</style>

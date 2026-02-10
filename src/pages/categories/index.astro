@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+// 提取所有分类
+const categories = new Map<string, { count: number; posts: any[] }>();
+allPosts.forEach((post) => {
+  const category = post.data.category || '未分类';
+  if (!categories.has(category)) {
+    categories.set(category, { count: 0, posts: [] });
+  }
+  categories.get(category)!.count++;
+  categories.get(category)!.posts.push(post);
+});
+
+// 按分类名排序
+const sortedCategories = Array.from(categories.entries()).sort((a, b) =>
+  a[0].localeCompare(b[0])
+);
+---
+
+<Layout title="所有分类">
+  <h1>📂 所有分类</h1>
+
+  <div class="categories-grid">
+    {sortedCategories.map(([category, info]) => (
+      <div class="category-card">
+        <h2>
+          <a href={`/categories/${category}`}>{category}</a>
+        </h2>
+        <p>{info.count} 篇文章</p>
+      </div>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 40px;
+  }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .category-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+
+  .category-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+  }
+
+  .category-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+  }
+
+  .category-card h2 a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .category-card h2 a:hover {
+    color: #2563eb;
+  }
+
+  .category-card p {
+    margin: 0;
+    color: #6b7280;
+  }
+</style>

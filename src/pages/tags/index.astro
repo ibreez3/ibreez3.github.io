@@ -1,0 +1,82 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+
+// 提取所有标签
+const tags = new Map<string, { count: number; posts: any[] }>();
+allPosts.forEach((post) => {
+  post.data.tags.forEach((tag) => {
+    if (!tags.has(tag)) {
+      tags.set(tag, { count: 0, posts: [] });
+    }
+    tags.get(tag)!.count++;
+    tags.get(tag)!.posts.push(post);
+  });
+});
+
+// 按标签名排序
+const sortedTags = Array.from(tags.entries()).sort((a, b) =>
+  a[0].localeCompare(b[0])
+);
+---
+
+<Layout title="所有标签">
+  <h1>🏷️ 所有标签</h1>
+
+  <div class="tags-grid">
+    {sortedTags.map(([tag, info]) => (
+      <div class="tag-card">
+        <h2>
+          <a href={`/tags/${tag}`}>#{tag}</a>
+        </h2>
+        <p>{info.count} 篇文章</p>
+      </div>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 40px;
+  }
+
+  .tags-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .tag-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px;
+    transition: all 0.2s;
+  }
+
+  .tag-card:hover {
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+  }
+
+  .tag-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+  }
+
+  .tag-card h2 a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .tag-card h2 a:hover {
+    color: #2563eb;
+  }
+
+  .tag-card p {
+    margin: 0;
+    color: #6b7280;
+  }
+</style>

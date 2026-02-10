@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts');
+const recentPosts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 5);
+---
+
+<Layout title="首页">
+  <section>
+    <h1>👋 你好，我是 IBree3</h1>
+    <p>从零到无限可能。记录技术成长，分享学习心得。</p>
+  </section>
+
+  <section>
+    <h2>最新文章</h2>
+    <ul>
+      {recentPosts.map((post) => (
+        <li>
+          <a href={`/posts/${post.slug}`}>
+            <h3>{post.data.title}</h3>
+            <div class="meta">
+              <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+              {post.data.category && (
+                <>
+                  {' · '}
+                  <span class="category">{post.data.category}</span>
+                </>
+              )}
+            </div>
+            <p>{post.data.description || ''}</p>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="tags">
+                {post.data.tags.map((tag) => (
+                  <span class="tag">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+
+<style>
+  section {
+    margin-bottom: 60px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 30px;
+  }
+
+  li a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  li a:hover h3 {
+    color: #2563eb;
+  }
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.25rem;
+  }
+
+  .meta {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin-bottom: 8px;
+  }
+
+  time {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  .category {
+    display: inline-block;
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+
+  p {
+    margin: 8px 0 0 0;
+    color: #4b5563;
+  }
+
+  .tags {
+    margin-top: 8px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: #f3f4f6;
+    color: #4b5563;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+</style>

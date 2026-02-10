@@ -1,0 +1,99 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+const { site } = Astro.config;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="个人技术博客" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | ZeroOne</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/">ZeroOne</a>
+        <div>
+          <a href="/">首页</a>
+          <a href="/posts">文章</a>
+          <a href="/categories">分类</a>
+          <a href="/tags">标签</a>
+          <a href="/about">关于</a>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; 2026 ZeroOne. All rights reserved.</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --max-width: 1200px;
+    --nav-height: 60px;
+    --font-main: system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-main);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    height: var(--nav-height);
+    display: flex;
+    align-items: center;
+  }
+
+  nav {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  nav a {
+    color: #374151;
+    text-decoration: none;
+    margin-right: 20px;
+  }
+
+  nav a:hover {
+    color: #2563eb;
+  }
+
+  main {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+  }
+</style>
