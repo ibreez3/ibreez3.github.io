@@ -19,6 +19,18 @@ allPosts.forEach((post) => {
 const sortedCategories = Array.from(categories.entries()).sort((a, b) =>
   b[1].count - a[1].count
 );
+
+// 获取分类图标
+function getCategoryIcon(category: string): string {
+  const icons: Record<string, string> = {
+    'AI': '🤖',
+    '前端': '🎨',
+    '后端': '⚙️',
+    '生活': '🌱',
+    '未分类': '📁',
+  };
+  return icons[category] || '📂';
+}
 ---
 
 <Layout
@@ -46,19 +58,6 @@ const sortedCategories = Array.from(categories.entries()).sort((a, b) =>
     ))}
   </div>
 </Layout>
-
-<script>
-  function getCategoryIcon(category: string): string {
-    const icons: Record<string, string> = {
-      'AI': '🤖',
-      '前端': '🎨',
-      '后端': '⚙️',
-      '生活': '🌱',
-      '未分类': '📁',
-    };
-    return icons[category] || '📂';
-  }
-</script>
 
 <style>
   .page-header {
