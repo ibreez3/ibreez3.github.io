@@ -32,7 +32,7 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     <div class="article-header-wrapper">
       <div class="article-header">
         <div class="header-meta">
-          {categories category && (category && ( categories.length > 0 && (
+          {categories && categories.length > 0 && (
             <a href={`/categories/${categories[0]}`} class="category-badge">
               {categories[0]}
             </a>
