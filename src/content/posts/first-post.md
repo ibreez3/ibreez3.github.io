@@ -1,9 +1,9 @@
 ---
 title: 欢迎来到我的博客
-date: 2026-02-10
 description: 这是我的第一篇博客文章，介绍一下这个博客。
+pubDate: 2026-02-10
+categories: [生活]
 tags: [博客, 开始]
-category: 生活
 ---
 
 # 欢迎来到我的博客
