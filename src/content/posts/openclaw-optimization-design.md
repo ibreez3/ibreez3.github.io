@@ -1,6 +1,6 @@
 ---
 title: OpenClaw 优化设计：构建高性能 AI Agent 系统
-date: 2026-02-10
+pubDate: 2026-02-10
 description: 深入探讨 OpenClaw 的架构优化设计，包括会话管理、记忆系统、多 Agent 协同等核心模块的实现思路与最佳实践。
 tags: [OpenClaw, AI, Agent, 架构设计, 性能优化]
 category: AI

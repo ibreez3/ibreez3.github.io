@@ -1,6 +1,6 @@
 ---
 title: OpenClaw Multi-Agent 最佳实践：构建智能协作系统
-date: 2026-02-10
+pubDate: 2026-02-10
 description: 深入解析 OpenClaw 多智能体架构，从概念到实战，掌握主 Agent 协调、子 Agent 执行的最佳设计方案。
 tags: [OpenClaw, Multi-Agent, AI, 架构设计, 实战]
 category: AI
