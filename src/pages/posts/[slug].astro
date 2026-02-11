@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
-const { title, date, category, tags, description } = post.data;
+const { title, pubDate, categories, tags, description } = post.data;
 
 // 计算阅读时间（中文每分钟约 400 字）
 const readTime = Math.ceil(Content.length / 400);
@@ -32,13 +32,13 @@ const toc = headings.filter(h => h.depth <= 3 && h.depth >= 2);
     <div class="article-header-wrapper">
       <div class="article-header">
         <div class="header-meta">
-          {category && (
-            <a href={`/categories/${category}`} class="category-badge">
-              {category}
+          {categories category && (category && ( categories.length > 0 && (
+            <a href={`/categories/${categories[0]}`} class="category-badge">
+              {categories[0]}
             </a>
           )}
-          <time datetime={date.toISOString()} class="article-date">
-            {date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          <time datetime={pubDate.toISOString()} class="article-date">
+            {pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
           </time>
         </div>
 
