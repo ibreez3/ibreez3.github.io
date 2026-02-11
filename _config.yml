@@ -1,0 +1,14 @@
+theme: minima
+title: IBreez3's Blog
+email: ibreez3@example.com
+description: >-
+  Welcome to my programming blog where I share insights about Go, 
+  development practices, and technology trends.
+baseurl: ""
+url: "https://ibreez3.github.io"
+twitter_username: ibreez3
+github_username: ibreez3
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
