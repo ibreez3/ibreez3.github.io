@@ -32,11 +32,11 @@ const tagPosts = allPosts
       <li>
         <a href={`/posts/${post.slug}`}>
           <h2>{post.data.title}</h2>
-          <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
-          {post.data.category && (
+          <time>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
+          {post.data.categories[0] && (
             <>
               {' · '}
-              <span class="category">{post.data.category}</span>
+              <span class="category">{post.data.categories[0]}</span>
             </>
           )}
         </a>

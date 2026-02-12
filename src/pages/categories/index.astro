@@ -7,7 +7,7 @@ const allPosts = await getCollection('posts');
 // 提取所有分类
 const categories = new Map<string, { count: number; posts: any[] }>();
 allPosts.forEach((post) => {
-  const category = post.data.category || '未分类';
+  const category = post.data.categories[0] || '未分类';
   if (!categories.has(category)) {
     categories.set(category, { count: 0, posts: [] });
   }

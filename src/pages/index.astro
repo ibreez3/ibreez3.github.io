@@ -38,10 +38,10 @@ const recentPosts = allPosts
             <div class="post-content">
               <div class="post-meta">
                 <time class="post-date">
-                  {post.data.date.toLocaleDateString('zh-CN')}
+                  {post.data.pubDate.toLocaleDateString('zh-CN')}
                 </time>
-                {post.data.category && (
-                  <span class="post-category">{post.data.category}</span>
+                {post.data.categories[0] && (
+                  <span class="post-category">{post.data.categories[0]}</span>
                 )}
               </div>
 

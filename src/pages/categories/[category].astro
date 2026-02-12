@@ -7,8 +7,8 @@ export async function getStaticPaths() {
   const categories = new Set<string>();
 
   posts.forEach((post) => {
-    if (post.data.category) {
-      categories.add(post.data.category);
+    if (post.data.categories[0]) {
+      categories.add(post.data.categories[0]);
     }
   });
 
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 const { category } = Astro.params;
 const allPosts = await getCollection('posts');
 const categoryPosts = allPosts
-  .filter((post) => post.data.category === category)
+  .filter((post) => post.data.categories[0] === category)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
@@ -34,7 +34,7 @@ const categoryPosts = allPosts
       <li>
         <a href={`/posts/${post.slug}`}>
           <h2>{post.data.title}</h2>
-          <time>{post.data.date.toLocaleDateString('zh-CN')}</time>
+          <time>{post.data.pubDate.toLocaleDateString('zh-CN')}</time>
           {post.data.tags && post.data.tags.length > 0 && (
             <div class="tags">
               {post.data.tags.map((tag) => (
