@@ -3,7 +3,7 @@ title: "Go 1.26 升级详解：新特性与实用案例"
 pubDate: 2026-02-11
 description: "详细介绍 Go 1.26 版本的新特性和改进，包含每个功能点的实用代码案例"
 tags: [Go, Golang, 升级, 特性, 编程]
-category: Go
+categories: [Go]
 ---
 
 # Go 1.26 升级详解：新特性与实用案例
