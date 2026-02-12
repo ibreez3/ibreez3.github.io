@@ -7,7 +7,7 @@ export async function getStaticPaths() {
   const categories = new Set<string>();
 
   posts.forEach((post) => {
-    if (post.data.categories[0]) {
+    if (post.data.categories && post.data.categories[0]) {
       categories.add(post.data.categories[0]);
     }
   });
@@ -21,7 +21,7 @@ const { category } = Astro.params;
 const allPosts = await getCollection('posts');
 const categoryPosts = allPosts
   .filter((post) => post.data.categories[0] === category)
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <Layout title={`分类: ${category}`}>

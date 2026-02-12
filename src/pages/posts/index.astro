@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('posts');
 const sortedPosts = allPosts.sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  (a, b) => b.data.pubDate.valueOf() - a.data.date.valueOf()
 );
 
 // 计算统计数据

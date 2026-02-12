@@ -19,7 +19,7 @@ const { tag } = Astro.params;
 const allPosts = await getCollection('posts');
 const tagPosts = allPosts
   .filter((post) => post.data.tags.includes(tag))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.date.valueOf());
 ---
 
 <Layout title={`标签: ${tag}`}>
